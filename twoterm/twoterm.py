@@ -1,4 +1,4 @@
-__author__ = 'mab'
+__author__ = 'Markus Becker'
 
 try:
     from PyQt5.QtCore import pyqtSlot, QTimer
