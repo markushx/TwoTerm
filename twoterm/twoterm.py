@@ -36,7 +36,7 @@ class TwoTermWidget(QMainWindow):
         self.sioL = None
         self.sioR = None
 
-        loadUi('TwoTerm.ui', self)
+        loadUi('TwoTermSingleScrollArea.ui', self)
 
         self.connect_status = False
 
@@ -49,18 +49,22 @@ class TwoTermWidget(QMainWindow):
         self.comboBoxLBaudrate.addItems(map(str, serial.Serial.BAUDRATES))
         self.comboBoxRBaudrate.addItems(map(str, serial.Serial.BAUDRATES))
 
+        self.textR.verticalScrollBar().valueChanged.connect(self.textL.verticalScrollBar().setValue)
+        self.textR.horizontalScrollBar().valueChanged.connect(self.textL.horizontalScrollBar().setValue)
+        self.textL.horizontalScrollBar().valueChanged.connect(self.textR.horizontalScrollBar().setValue)
+
     def timeout(self):
         l = self.sioL.readline()
         r = self.sioR.readline()
         if l != "":
-            self.textBrowserL.append(l)
+            self.textL.append(l)
         if r != "":
-            self.textBrowserR.append(r)
+            self.textR.append(r)
 
         if l != "" and r == "":
-            self.textBrowserR.append("")
+            self.textR.append("")
         if l == "" and r != "":
-            self.textBrowserL.append("")
+            self.textL.append("")
 
     @pyqtSlot()
     def on_connectButton_clicked(self):
@@ -92,8 +96,8 @@ class TwoTermWidget(QMainWindow):
 
             self.connectButton.setText(DISCONNECT_LABEL)
             self.connect_status = True
-            self.textBrowserL.append(CONNECT_LABEL + " " + str(self.serL))
-            self.textBrowserR.append(CONNECT_LABEL + " " + str(self.serR))
+            self.textL.append(CONNECT_LABEL + " " + str(self.serL))
+            self.textR.append(CONNECT_LABEL + " " + str(self.serR))
 
             self.timer = QTimer(self)
             self.timer.timeout.connect(self.timeout)
@@ -113,5 +117,5 @@ class TwoTermWidget(QMainWindow):
 
             self.connectButton.setText(CONNECT_LABEL)
             self.connect_status = False
-            self.textBrowserL.append(DISCONNECT_LABEL)
-            self.textBrowserR.append(DISCONNECT_LABEL)
+            self.textL.append(DISCONNECT_LABEL)
+            self.textR.append(DISCONNECT_LABEL)
