@@ -16,6 +16,7 @@ from serial.tools.list_ports import comports
 
 CONNECT_LABEL = "Connect"
 DISCONNECT_LABEL = "Disconnect"
+
 TIMEOUT_READLINE = 0.01
 TIMEOUT_TIMER = 1
 
@@ -45,6 +46,8 @@ class TwoTermWidget(QMainWindow):
         self.textR.horizontalScrollBar().valueChanged.connect(self.textL.horizontalScrollBar().setValue)
         self.textL.horizontalScrollBar().valueChanged.connect(self.textR.horizontalScrollBar().setValue)
 
+        self.timer = None
+
     def timeout(self):
         l = self.sioL.readline()
         r = self.sioR.readline()
@@ -58,23 +61,24 @@ class TwoTermWidget(QMainWindow):
         if l == "" and r != "":
             self.textL.append("")
 
+    # noinspection PyPep8Naming
     @pyqtSlot()
     def on_connectButton_clicked(self):
 
         if not self.connect_status:
 
-            portL = self.comboBoxL.currentText()
-            portR = self.comboBoxR.currentText()
+            portl = self.comboBoxL.currentText()
+            portr = self.comboBoxR.currentText()
 
-            if portL == "":
-                portL = 'loop://'
+            if portl == "":
+                portl = 'loop://'
 
-            if portR == "":
-                portR = 'loop://'
+            if portr == "":
+                portr = 'loop://'
 
-            self.serL = serial.serial_for_url(portL, baudrate=int(self.comboBoxLBaudrate.currentText()),
+            self.serL = serial.serial_for_url(portl, baudrate=int(self.comboBoxLBaudrate.currentText()),
                                               timeout=TIMEOUT_READLINE)
-            self.serR = serial.serial_for_url(portR, baudrate=int(self.comboBoxRBaudrate.currentText()),
+            self.serR = serial.serial_for_url(portr, baudrate=int(self.comboBoxRBaudrate.currentText()),
                                               timeout=TIMEOUT_READLINE)
 
             self.sioL = io.TextIOWrapper(io.BufferedRWPair(self.serL, self.serL))
