@@ -4,7 +4,7 @@ try:
     from PyQt5.QtCore import pyqtSlot, QTimer
     from PyQt5.QtWidgets import QMainWindow
     from PyQt5.uic import loadUi
-except:
+except ImportError:
     print("Problems with PyQt5. Falling back to PyQt4.")
     from PyQt4.QtCore import pyqtSlot, QTimer
     from PyQt4.QtGui import QMainWindow

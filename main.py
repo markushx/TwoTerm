@@ -4,7 +4,7 @@ import sys
 
 try:
     from PyQt5.QtWidgets import QApplication
-except:
+except ImportError:
     print("Problems with PyQt5. Falling back to PyQt4.")
     from PyQt4.QtGui import QApplication
 
