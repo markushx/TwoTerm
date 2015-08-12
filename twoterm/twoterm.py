@@ -10,17 +10,9 @@ except ImportError:
     from PyQt4.QtGui import QMainWindow
     from PyQt4.uic import loadUi
 
-from serial.tools.list_ports import comports
-
-import serial.tools.list_ports
-
-
-ports = list(serial.tools.list_ports.comports())
-for p in ports:
-    print(p)
-
 import serial
 import io
+from serial.tools.list_ports import comports
 
 CONNECT_LABEL = "Connect"
 DISCONNECT_LABEL = "Disconnect"
