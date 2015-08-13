@@ -90,9 +90,17 @@ class TwoTermWidget(QMainWindow):
             if portr == "":
                 portr = 'loop://'
 
-            self.serL = serial.serial_for_url(portl, baudrate=int(self.comboBoxLBaudrate.currentText()),
+            self.serL = serial.serial_for_url(portl,
+                                              baudrate=int(self.comboBoxLBaudrate.currentText()),
+                                              bytesize=int(self.comboBoxLBytesizes.currentText()),
+                                              parity=self.comboBoxLParity.currentText(),
+                                              stopbits=float(self.comboBoxLStopbits.currentText()),
                                               timeout=TIMEOUT_READLINE)
-            self.serR = serial.serial_for_url(portr, baudrate=int(self.comboBoxRBaudrate.currentText()),
+            self.serR = serial.serial_for_url(portr,
+                                              baudrate=int(self.comboBoxRBaudrate.currentText()),
+                                              bytesize=int(self.comboBoxLBytesizes.currentText()),
+                                              parity=self.comboBoxLParity.currentText(),
+                                              stopbits=float(self.comboBoxLStopbits.currentText()),
                                               timeout=TIMEOUT_READLINE)
 
             self.sioL = io.TextIOWrapper(io.BufferedRWPair(self.serL, self.serL))
