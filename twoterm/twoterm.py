@@ -85,10 +85,10 @@ class TwoTermWidget(QMainWindow):
             self.sioR = io.TextIOWrapper(io.BufferedRWPair(self.serR, self.serR))
 
             # test
-            self.sioL.write(u"hello l")
-            self.sioL.flush()
-            self.sioR.write(u"hello r")
-            self.sioR.flush()
+            #self.sioL.write(u"hello l")
+            #self.sioL.flush()
+            #self.sioR.write(u"hello r")
+            #self.sioR.flush()
 
             self.connectButton.setText(DISCONNECT_LABEL)
             self.connect_status = True
