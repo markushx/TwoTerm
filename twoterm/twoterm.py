@@ -17,7 +17,7 @@ from serial.tools.list_ports import comports
 CONNECT_LABEL = "Connect"
 DISCONNECT_LABEL = "Disconnect"
 
-TIMEOUT_READLINE = 0.01
+TIMEOUT_READLINE = 0
 TIMEOUT_TIMER = 1
 
 
