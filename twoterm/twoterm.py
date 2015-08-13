@@ -41,6 +41,20 @@ class TwoTermWidget(QMainWindow):
 
         self.comboBoxLBaudrate.addItems(map(str, serial.Serial.BAUDRATES))
         self.comboBoxRBaudrate.addItems(map(str, serial.Serial.BAUDRATES))
+        self.comboBoxLBaudrate.setCurrentIndex(12)
+        self.comboBoxRBaudrate.setCurrentIndex(12)
+
+        self.comboBoxLBytesizes.addItems(map(str, serial.Serial.BYTESIZES))
+        self.comboBoxRBytesizes.addItems(map(str, serial.Serial.BYTESIZES))
+        self.comboBoxLBytesizes.setCurrentIndex(3)
+        self.comboBoxRBytesizes.setCurrentIndex(3)
+
+        self.comboBoxLParity.addItems(map(str, serial.Serial.PARITIES))
+        self.comboBoxRParity.addItems(map(str, serial.Serial.PARITIES))
+
+        self.comboBoxLStopbits.addItems(map(str, serial.Serial.STOPBITS))
+        self.comboBoxRStopbits.addItems(map(str, serial.Serial.STOPBITS))
+
 
         self.textR.verticalScrollBar().valueChanged.connect(self.textL.verticalScrollBar().setValue)
         self.textR.horizontalScrollBar().valueChanged.connect(self.textL.horizontalScrollBar().setValue)
