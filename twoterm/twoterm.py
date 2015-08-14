@@ -2,7 +2,7 @@ __author__ = 'Markus Becker'
 
 try:
     from PyQt5.QtCore import pyqtSlot, QTimer
-    from PyQt5.QtWidgets import QMainWindow
+    from PyQt5.QtWidgets import QMainWindow, QMessageBox
     from PyQt5.uic import loadUi
     from PyQt5.QtCore import QSettings
 except ImportError:
@@ -147,18 +147,27 @@ class TwoTermWidget(QMainWindow):
             if portr == "":
                 portr = 'loop://'
 
-            self.serL = serial.serial_for_url(portl,
-                                              baudrate=int(self.comboBoxLBaudrate.currentText()),
-                                              bytesize=int(self.comboBoxLBytesizes.currentText()),
-                                              parity=self.comboBoxLParity.currentText(),
-                                              stopbits=float(self.comboBoxLStopbits.currentText()),
-                                              timeout=TIMEOUT_READLINE)
-            self.serR = serial.serial_for_url(portr,
-                                              baudrate=int(self.comboBoxRBaudrate.currentText()),
-                                              bytesize=int(self.comboBoxLBytesizes.currentText()),
-                                              parity=self.comboBoxLParity.currentText(),
-                                              stopbits=float(self.comboBoxLStopbits.currentText()),
-                                              timeout=TIMEOUT_READLINE)
+            try:
+                self.serL = serial.serial_for_url(portl,
+                                                  baudrate=int(self.comboBoxLBaudrate.currentText()),
+                                                  bytesize=int(self.comboBoxLBytesizes.currentText()),
+                                                  parity=self.comboBoxLParity.currentText(),
+                                                  stopbits=float(self.comboBoxLStopbits.currentText()),
+                                                  timeout=TIMEOUT_READLINE)
+            except serial.serialutil.SerialException as e:
+                QMessageBox.warning(None, "", "Unable to open serial port " + portl + ".")
+                return
+
+            try:
+                self.serR = serial.serial_for_url(portr,
+                                                  baudrate=int(self.comboBoxRBaudrate.currentText()),
+                                                  bytesize=int(self.comboBoxLBytesizes.currentText()),
+                                                  parity=self.comboBoxLParity.currentText(),
+                                                  stopbits=float(self.comboBoxLStopbits.currentText()),
+                                                  timeout=TIMEOUT_READLINE)
+            except serial.serialutil.SerialException as e:
+                QMessageBox.warning(None, "", "Unable to open serial port " + portr + ".")
+                return
 
             self.sioL = io.TextIOWrapper(io.BufferedRWPair(self.serL, self.serL))
             self.sioR = io.TextIOWrapper(io.BufferedRWPair(self.serR, self.serR))
