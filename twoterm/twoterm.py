@@ -1,16 +1,17 @@
 __author__ = 'Markus Becker'
 
 try:
-    from PyQt5.QtCore import pyqtSlot, QTimer
+    from PyQt5.QtCore import pyqtSlot, QTimer, QSize
     from PyQt5.QtWidgets import QMainWindow, QMessageBox
     from PyQt5.uic import loadUi
     from PyQt5.QtCore import QSettings
+    from PyQt5.QtGui import QIcon
+    
 except ImportError:
     print("Problems with PyQt5. Falling back to PyQt4.")
-    from PyQt4.QtCore import pyqtSlot, QTimer
-    from PyQt4.QtGui import QMainWindow
+    from PyQt4.QtCore import pyqtSlot, QTimer, QSettings, QSize
+    from PyQt4.QtGui import QMainWindow, QIcon
     from PyQt4.uic import loadUi
-    from PyQt4.QtCore import QSettings
 
 import serial
 import io
@@ -50,12 +51,16 @@ DEFAULT_STOPBITS_R = "1"
 class TwoTermWidget(QMainWindow):
     def __init__(self, *args):
         super(TwoTermWidget, self).__init__(*args)
+
         self.serL = None
         self.serR = None
         self.sioL = None
         self.sioR = None
 
         loadUi('TwoTermSingleScrollArea.ui', self)
+
+        app_icon = QIcon('TwoTerm.png')
+        self.setWindowIcon(app_icon)
 
         self.settings = QSettings("twoterm.cfg", QSettings.NativeFormat)
 
