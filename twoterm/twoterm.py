@@ -4,11 +4,13 @@ try:
     from PyQt5.QtCore import pyqtSlot, QTimer
     from PyQt5.QtWidgets import QMainWindow
     from PyQt5.uic import loadUi
+    from PyQt5.QtCore import QSettings
 except ImportError:
     print("Problems with PyQt5. Falling back to PyQt4.")
     from PyQt4.QtCore import pyqtSlot, QTimer
     from PyQt4.QtGui import QMainWindow
     from PyQt4.uic import loadUi
+    from PyQt4.QtCore import QSettings
 
 import serial
 import io
@@ -20,6 +22,30 @@ DISCONNECT_LABEL = "Disconnect"
 TIMEOUT_READLINE = 0
 TIMEOUT_TIMER = 1
 
+SETTING_COMPORT_L = "COMPORT_L"
+DEFAULT_COMPORT_L = ""
+SETTING_COMPORT_R = "COMPORT_R"
+DEFAULT_COMPORT_R = ""
+
+SETTING_BAUDRATE_L = "BAUDRATE_L"
+DEFAULT_BAUDRATE_L = "9600"
+SETTING_BAUDRATE_R = "BAUDRATE_R"
+DEFAULT_BAUDRATE_R = "9600"
+
+SETTING_BYTESIZE_L = "BYTESIZE_L"
+DEFAULT_BYTESIZE_L = "8"
+SETTING_BYTESIZE_R = "BYTESIZE_R"
+DEFAULT_BYTESIZE_R = "8"
+
+SETTING_PARITY_L = "PARITY_L"
+DEFAULT_PARITY_L = "N"
+SETTING_PARITY_R = "PARITY_R"
+DEFAULT_PARITY_R = "N"
+
+SETTING_STOPBITS_L = "STOPBITS_L"
+DEFAULT_STOPBITS_L = "1"
+SETTING_STOPBITS_R = "STOPBITS_R"
+DEFAULT_STOPBITS_R = "1"
 
 class TwoTermWidget(QMainWindow):
     def __init__(self, *args):
@@ -31,6 +57,8 @@ class TwoTermWidget(QMainWindow):
 
         loadUi('TwoTermSingleScrollArea.ui', self)
 
+        self.settings = QSettings("twoterm.cfg", QSettings.NativeFormat)
+
         self.connect_status = False
 
         iterator = sorted(comports())
@@ -38,27 +66,43 @@ class TwoTermWidget(QMainWindow):
             self.comboBoxL.addItem(str(port))
             self.comboBoxR.addItem(str(port))
             print("Port: " + str(port))
+        self.comboBoxL.setCurrentText(self.settings.value(SETTING_COMPORT_L, DEFAULT_COMPORT_L))
+        self.comboBoxR.setCurrentText(self.settings.value(SETTING_COMPORT_R, DEFAULT_COMPORT_R))
 
         self.comboBoxLBaudrate.addItems(map(str, serial.Serial.BAUDRATES))
         self.comboBoxRBaudrate.addItems(map(str, serial.Serial.BAUDRATES))
-        self.comboBoxLBaudrate.setCurrentIndex(12)
-        self.comboBoxRBaudrate.setCurrentIndex(12)
+        self.comboBoxLBaudrate.setCurrentText(self.settings.value(SETTING_BAUDRATE_L, DEFAULT_BAUDRATE_L))
+        self.comboBoxRBaudrate.setCurrentText(self.settings.value(SETTING_BAUDRATE_R, DEFAULT_BAUDRATE_R))
 
         self.comboBoxLBytesizes.addItems(map(str, serial.Serial.BYTESIZES))
         self.comboBoxRBytesizes.addItems(map(str, serial.Serial.BYTESIZES))
-        self.comboBoxLBytesizes.setCurrentIndex(3)
-        self.comboBoxRBytesizes.setCurrentIndex(3)
+        self.comboBoxLBytesizes.setCurrentText(self.settings.value(SETTING_BYTESIZE_L, DEFAULT_BYTESIZE_L))
+        self.comboBoxRBytesizes.setCurrentText(self.settings.value(SETTING_BYTESIZE_R, DEFAULT_BYTESIZE_R))
 
         self.comboBoxLParity.addItems(map(str, serial.Serial.PARITIES))
         self.comboBoxRParity.addItems(map(str, serial.Serial.PARITIES))
+        self.comboBoxLBytesizes.setCurrentText(self.settings.value(SETTING_PARITY_L, DEFAULT_PARITY_L))
+        self.comboBoxRBytesizes.setCurrentText(self.settings.value(SETTING_PARITY_R, DEFAULT_PARITY_R))
 
         self.comboBoxLStopbits.addItems(map(str, serial.Serial.STOPBITS))
         self.comboBoxRStopbits.addItems(map(str, serial.Serial.STOPBITS))
-
+        self.comboBoxLBytesizes.setCurrentText(self.settings.value(SETTING_STOPBITS_L, DEFAULT_STOPBITS_L))
+        self.comboBoxRBytesizes.setCurrentText(self.settings.value(SETTING_STOPBITS_R, DEFAULT_STOPBITS_R))
 
         self.textR.verticalScrollBar().valueChanged.connect(self.textL.verticalScrollBar().setValue)
         self.textR.horizontalScrollBar().valueChanged.connect(self.textL.horizontalScrollBar().setValue)
         self.textL.horizontalScrollBar().valueChanged.connect(self.textR.horizontalScrollBar().setValue)
+
+        self.comboBoxL.currentTextChanged.connect(self.update_settings)
+        self.comboBoxR.currentTextChanged.connect(self.update_settings)
+        self.comboBoxLBaudrate.currentIndexChanged.connect(self.update_settings)
+        self.comboBoxRBaudrate.currentIndexChanged.connect(self.update_settings)
+        self.comboBoxLBytesizes.currentIndexChanged.connect(self.update_settings)
+        self.comboBoxRBytesizes.currentIndexChanged.connect(self.update_settings)
+        self.comboBoxLParity.currentIndexChanged.connect(self.update_settings)
+        self.comboBoxRParity.currentIndexChanged.connect(self.update_settings)
+        self.comboBoxLStopbits.currentIndexChanged.connect(self.update_settings)
+        self.comboBoxRStopbits.currentIndexChanged.connect(self.update_settings)
 
         self.timer = None
 
@@ -74,6 +118,19 @@ class TwoTermWidget(QMainWindow):
             self.textR.append("")
         if l == "" and r != "":
             self.textL.append("")
+
+    @pyqtSlot()
+    def update_settings(self):
+        self.settings.setValue(SETTING_COMPORT_L, self.comboBoxL.currentText())
+        self.settings.setValue(SETTING_COMPORT_R, self.comboBoxR.currentText())
+        self.settings.setValue(SETTING_BAUDRATE_L, self.comboBoxLBaudrate.currentText())
+        self.settings.setValue(SETTING_BAUDRATE_R, self.comboBoxRBaudrate.currentText())
+        self.settings.setValue(SETTING_BYTESIZE_L, self.comboBoxLBytesizes.currentText())
+        self.settings.setValue(SETTING_BYTESIZE_R, self.comboBoxRBytesizes.currentText())
+        self.settings.setValue(SETTING_PARITY_L, self.comboBoxLParity.currentText())
+        self.settings.setValue(SETTING_PARITY_R, self.comboBoxRParity.currentText())
+        self.settings.setValue(SETTING_STOPBITS_L, self.comboBoxLStopbits.currentText())
+        self.settings.setValue(SETTING_STOPBITS_R, self.comboBoxRStopbits.currentText())
 
     # noinspection PyPep8Naming
     @pyqtSlot()
