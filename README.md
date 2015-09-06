@@ -1,8 +1,11 @@
 # TwoTerm
 Simple side-by-side terminal program. PyQt4/PyQt5 based. Python2/Python3.
 
+# Installation
+pip install TwoTerm
+
 # Run
-python main.py
+twoterm
 
 ![Screenshot of TwoTerm](docs/images/TwoTerm.png)
 
