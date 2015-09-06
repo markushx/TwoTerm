@@ -6,7 +6,7 @@ try:
     from PyQt5.uic import loadUi
     from PyQt5.QtCore import QSettings
     from PyQt5.QtGui import QIcon
-    
+
 except ImportError:
     print("Problems with PyQt5. Falling back to PyQt4.")
     from PyQt4.QtCore import pyqtSlot, QTimer, QSettings, QSize
@@ -71,35 +71,53 @@ class TwoTermWidget(QMainWindow):
             self.comboBoxL.addItem(str(port))
             self.comboBoxR.addItem(str(port))
             print("Port: " + str(port))
-        self.comboBoxL.setCurrentText(self.settings.value(SETTING_COMPORT_L, DEFAULT_COMPORT_L))
-        self.comboBoxR.setCurrentText(self.settings.value(SETTING_COMPORT_R, DEFAULT_COMPORT_R))
+        try:
+            self.comboBoxL.setCurrentText(self.settings.value(SETTING_COMPORT_L, DEFAULT_COMPORT_L))
+            self.comboBoxR.setCurrentText(self.settings.value(SETTING_COMPORT_R, DEFAULT_COMPORT_R))
+        except:
+            pass
 
         self.comboBoxLBaudrate.addItems(map(str, serial.Serial.BAUDRATES))
         self.comboBoxRBaudrate.addItems(map(str, serial.Serial.BAUDRATES))
-        self.comboBoxLBaudrate.setCurrentText(self.settings.value(SETTING_BAUDRATE_L, DEFAULT_BAUDRATE_L))
-        self.comboBoxRBaudrate.setCurrentText(self.settings.value(SETTING_BAUDRATE_R, DEFAULT_BAUDRATE_R))
+        try:
+            self.comboBoxLBaudrate.setCurrentText(self.settings.value(SETTING_BAUDRATE_L, DEFAULT_BAUDRATE_L))
+            self.comboBoxRBaudrate.setCurrentText(self.settings.value(SETTING_BAUDRATE_R, DEFAULT_BAUDRATE_R))
+        except:
+            pass
 
         self.comboBoxLBytesizes.addItems(map(str, serial.Serial.BYTESIZES))
         self.comboBoxRBytesizes.addItems(map(str, serial.Serial.BYTESIZES))
-        self.comboBoxLBytesizes.setCurrentText(self.settings.value(SETTING_BYTESIZE_L, DEFAULT_BYTESIZE_L))
-        self.comboBoxRBytesizes.setCurrentText(self.settings.value(SETTING_BYTESIZE_R, DEFAULT_BYTESIZE_R))
+        try:
+            self.comboBoxLBytesizes.setCurrentText(self.settings.value(SETTING_BYTESIZE_L, DEFAULT_BYTESIZE_L))
+            self.comboBoxRBytesizes.setCurrentText(self.settings.value(SETTING_BYTESIZE_R, DEFAULT_BYTESIZE_R))
+        except:
+            pass
 
         self.comboBoxLParity.addItems(map(str, serial.Serial.PARITIES))
         self.comboBoxRParity.addItems(map(str, serial.Serial.PARITIES))
-        self.comboBoxLBytesizes.setCurrentText(self.settings.value(SETTING_PARITY_L, DEFAULT_PARITY_L))
-        self.comboBoxRBytesizes.setCurrentText(self.settings.value(SETTING_PARITY_R, DEFAULT_PARITY_R))
+        try:
+            self.comboBoxLBytesizes.setCurrentText(self.settings.value(SETTING_PARITY_L, DEFAULT_PARITY_L))
+            self.comboBoxRBytesizes.setCurrentText(self.settings.value(SETTING_PARITY_R, DEFAULT_PARITY_R))
+        except:
+            pass
 
         self.comboBoxLStopbits.addItems(map(str, serial.Serial.STOPBITS))
         self.comboBoxRStopbits.addItems(map(str, serial.Serial.STOPBITS))
-        self.comboBoxLBytesizes.setCurrentText(self.settings.value(SETTING_STOPBITS_L, DEFAULT_STOPBITS_L))
-        self.comboBoxRBytesizes.setCurrentText(self.settings.value(SETTING_STOPBITS_R, DEFAULT_STOPBITS_R))
+        try:
+            self.comboBoxLBytesizes.setCurrentText(self.settings.value(SETTING_STOPBITS_L, DEFAULT_STOPBITS_L))
+            self.comboBoxRBytesizes.setCurrentText(self.settings.value(SETTING_STOPBITS_R, DEFAULT_STOPBITS_R))
+        except:
+            pass
 
         self.textR.verticalScrollBar().valueChanged.connect(self.textL.verticalScrollBar().setValue)
         self.textR.horizontalScrollBar().valueChanged.connect(self.textL.horizontalScrollBar().setValue)
         self.textL.horizontalScrollBar().valueChanged.connect(self.textR.horizontalScrollBar().setValue)
 
-        self.comboBoxL.currentTextChanged.connect(self.update_settings)
-        self.comboBoxR.currentTextChanged.connect(self.update_settings)
+        try:
+            self.comboBoxL.currentTextChanged.connect(self.update_settings)
+            self.comboBoxR.currentTextChanged.connect(self.update_settings)
+        except:
+            pass
         self.comboBoxLBaudrate.currentIndexChanged.connect(self.update_settings)
         self.comboBoxRBaudrate.currentIndexChanged.connect(self.update_settings)
         self.comboBoxLBytesizes.currentIndexChanged.connect(self.update_settings)
